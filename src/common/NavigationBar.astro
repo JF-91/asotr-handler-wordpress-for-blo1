@@ -1,0 +1,32 @@
+---
+import { getPagesByUries } from "../libs/queries.js";
+import BlockRender from "../components/BlockRender.astro";
+
+const pages = await getPagesByUries() || [];
+---
+
+<div class="nav-container">
+    {
+        pages.map((page:any, index:any) => {
+            return <a href = {page.uri} key={index}>{page.slug}</a>
+        })
+    }
+</div>
+
+<style scoped>
+    .nav-container {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        padding: 1rem;
+        background-color:beige;
+        color: white;
+        margin-top: 200px;
+    }
+    a {
+        color: black;
+        text-decoration: none;
+        font-size: 1.5rem;
+        margin: 1rem;
+    }
+</style>

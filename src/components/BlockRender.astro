@@ -1,0 +1,72 @@
+---
+import type { Block } from "@wp-block-tools/styles";
+import { getBlockStyling } from "@wp-block-tools/styles";
+const { blocks } = Astro.props;
+import BlockReRender from "./BlockRender.astro";
+
+type Props = {
+  blocks: Block[];
+};
+---
+
+{
+  blocks && Array.isArray(blocks) ? (
+    blocks.map((block, index) => {
+      const { styles, classes } = getBlockStyling(block);
+
+      switch (block.name) {
+        case "core/paragraph":
+          return (
+            <p
+              class={classes}
+              style={styles}
+              key={index}
+              set:html={block.attributes?.content}
+            />
+          );
+        case "core/columns":
+        case "core/column":
+        case "core/post-content":
+          return (
+            <div class={classes} style={styles} key={index}>
+              <BlockReRender blocks={block.innerBlocks || []} />
+            </div>
+          );
+        case "core/image":
+          return (
+            <div class={classes} style={styles} key={index}>
+              <img src={block.attributes?.url} alt={block.attributes?.alt} />
+            </div>
+          );
+        case "core/gallery":
+          return (
+            <div class={classes} style={styles} key={index}>
+              <BlockReRender blocks={block.innerBlocks || []} />
+            </div>
+          );
+        case "core/post-featured-image":
+          return (
+            <div class={classes} style={styles} key={index}>
+              <img src={block.attributes?.url} alt={block.attributes?.alt} />
+            </div>
+          );
+        case "core/buttons":
+          return (
+            <div class={classes} style={styles} key={index}>
+              <BlockReRender blocks={block.innerBlocks || []} />
+            </div>
+          );
+        case "core/button":
+          return (
+            <div class={classes} style={styles} key={index}>
+               <BlockReRender blocks={block.innerBlocks || []} />
+            </div>
+          );
+        default:
+          return null;
+      }
+    })
+  ) : (
+    <p>No blocks to render.</p>
+  )
+}

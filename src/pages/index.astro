@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BlockRender from '../components/BlockRender.astro';
+import {getBlocks, getTitlePage} from '../libs/queries.js';
+
+const getblocks = await getBlocks();
+const title = await getTitlePage();
+
+---
+<Layout title={title}>
+	<BlockRender blocks={getblocks} />
+</Layout>
+
+

@@ -1,0 +1,55 @@
+---
+import "../styles/global.css";
+import { wpquery } from '../graphql/wordpressQuery';
+import {getMetaDescription} from '../libs/queries.js';
+import NavigationBar from "../common/NavigationBar.astro";
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+
+
+const data = await wpquery({
+	query: `
+		query PageQuery {
+			cssVariables
+			nodeByUri(uri: "/") {
+				... on Page {
+					id
+					title
+					content
+					blocks
+					seo {
+						metaDesc
+					}
+				}
+			}
+		}
+	`
+});
+
+
+const desc = await getMetaDescription() || {};
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={desc} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+
+		{!!data.cssVariables && <style set:html={`:root{${data.cssVariables}}`} />}
+	</head>
+	<body class="bg-slate-400">
+		<NavigationBar />
+		<slot />
+	</body>
+</html>
+<style is:global>
+	
+</style>

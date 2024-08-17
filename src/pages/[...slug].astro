@@ -1,0 +1,41 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BlockRender from "../components/BlockRender.astro";
+import { getPagesByUries, getBlocks, getTitlePage } from "../libs/queries.js";
+import type { Block } from "@wp-block-tools/styles";
+
+type Props = {
+  blocks: Block[];
+  title: string;
+};
+
+export async function getStaticPaths() {
+  const pages = (await getPagesByUries()) || [];
+
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+  }));
+}
+
+export async function getStaticProps({ params }) {
+  const blocks = (await getBlocks(params.slug)) || [];
+  const title = await getTitlePage(params.slug);
+
+  return {
+    props: {
+      blocks,
+      title,
+    },
+  };
+}
+
+const { title, blocks } = Astro.props;
+const { slug } = Astro.params;
+
+const titulo: any = await getTitlePage(slug);
+const bloque:any = await getBlocks(slug)
+---
+
+<Layout title={titulo}>
+  <BlockRender blocks={bloque} />
+</Layout>
